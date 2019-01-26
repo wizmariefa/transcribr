@@ -1,0 +1,119 @@
+@import "colors";
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Archivo', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: $white;
+  color: $white;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 10rem;
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  word-spacing: 4px;
+  font-weight: 500;
+  
+}
+
+input {
+  width: 400px;
+  margin-bottom: 1rem;
+  border: 0px;
+  outline: 0;
+  height: 30px;
+  font-size: 1rem;
+  padding: 5px;
+  background: transparent;
+ color: white;
+ border-bottom: 2px solid white; 
+}
+
+
+.FlexRow {
+  display: flex;
+}
+
+.FlexColumn {
+  display: flex;
+  flex-direction: column;
+}
+
+.AlignCenter {
+  align-items: center;
+}
+
+.JustifyCenter {
+  justify-content: center;
+}
+
+.Flex1 {
+  flex: 1;
+}
+
+.LargeText {
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: $white;
+  word-spacing: 4px;
+}
+
+.SmallText {
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: $white;
+  word-spacing: 4px;
+  margin: 1rem 0;
+}
+
+
+.Button {
+  height: 40px;
+  width: 400px;
+  background-color: transparent;
+  transition: background-color 0.2s;
+  border: 2px solid white;
+  border-radius: 5px;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  padding-bottom: 5px;
+  margin-top: 1rem;
+  position: relative;
+  
+
+  &:hover {
+    cursor: pointer;
+    // background-color: black;
+    color: white;
+    
+  }
+
+  &:active {
+    top: 1px;
+  }
+}
+
+.Error {
+  color: $red;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 1rem;
+  width: 500px;
+  text-align: center;
+}
