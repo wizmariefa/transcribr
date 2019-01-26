@@ -58,7 +58,7 @@ class Transcribr:
             end_time = word_info.end_time.seconds + word_info.end_time.nanos * 1e-9
 
             if(conf < .5):
-                output2.write(word + " : " start_time + "\n\r")
+                output2.write(word + " : " + start_time + "\n\r")
 
             """
             for word_info in alternative.words:
