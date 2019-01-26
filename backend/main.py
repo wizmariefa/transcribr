@@ -1,13 +1,16 @@
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, Response
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import create_engine
+from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from google_auth import Google_Auth
 from transcription import Transcribr
-from flask_sqlalchemy import SQLAlchemy
 import os
 #############################################
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 db = SQLAlchemy(app)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 app.secret_key = os.urandom(24)
 
 class User(db.Model):
@@ -30,18 +33,42 @@ class User(db.Model):
         self.gcpRefreshToken = gcpRefreshToken
         self.registered_on = datetime.utcnow()
 
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return unicode(self.id)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
 
 #############################################
+# TODO: What are we returning?
+@app.route("/login", methods=["GET", "POST"])
+def login(user_info):
+    content = request.get_json()
+    user = User.query.filter_by(email=content['email']).first()
+    return generate_password_hash(content['password']) == user.passwordHash
 
-@app.route("/login")
-def login():
-    # login user with password
-    pass
-
-@app.route("/signup")
+@app.route("/signup", methods=["GET", "POST"])
 def sign_up():
-    # sign up new user
-    pass
+    content = request.get_json()
+    hashed_pw = generate_password_hash(content['password'])
+    new_user = User(content['firstName'], content['lastName'], 
+                    content['email'], hashed_pw)
+    db.session.add(new_user)
+    db.session.commit()
+    return "User is signed up!"
 
 @app.route("/auth/register")
 def auth_register():
@@ -54,6 +81,7 @@ def auth_login():
     pass
 
 @app.route("/transcribe", methods=["GET", "POST"])
+@login_required
 def fileupload():
     # this will be called to upload and transcribe file
     UPLOAD_FOLDER = '/path/to/the/uploads'
