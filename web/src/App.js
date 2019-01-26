@@ -3,10 +3,7 @@ import { Switch, Route } from 'react-router-dom';
 import LandingPage from "./containers/LandingPage";
 import Register from "./containers/Register";
 import Login from './containers/Login';
-import Studies from "./components/Studies";
-import Study from './components/Study';
-import CreateStudy from './components/CreateStudy';
-
+import Dashboard from "./containers/Dashboard";
 
 class App extends Component {
   render() {
@@ -16,6 +13,7 @@ class App extends Component {
           <Route exact path="/" component={LandingPage} />
           <Route exact path="/register" component={Register} />
           <Route exact path="/login" component={Login} />
+          <Route exact path="/dashboard" component={Dashboard} />
         </Switch>
       </main>
     );
