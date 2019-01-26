@@ -2,6 +2,7 @@
 from google.cloud import speech
 from google.cloud.speech import enums
 from google.cloud.speech import types
+import os
 #from google.cloud import speech_v1p1beta1 as speech_beta #This is for word confidence beta
 #--note: Currently just foundation, will need to change it to apply to our purpose.
 
@@ -38,6 +39,13 @@ class Transcribr:
 
         result = operation.result(timeout=90) #not sure what this does tbh
 
+        output = open("output.txt", "w+")
+        output2 = open("feature.txt", "w+")
+
+        for i, word in enumerate(result.results):
+            output.write(word + " ")
+        output.close
+
         #May need to print these out to understand structure of using both word confidence & offset
         for result in result.results:
             alt = result.alternatives[0] #I want to print this later to understand it better
@@ -49,12 +57,17 @@ class Transcribr:
             start_time = word_info.start_time.seconds + word_info.start_time.nanos * 1e-9
             end_time = word_info.end_time.seconds + word_info.end_time.nanos * 1e-9
 
+            if(conf < .5):
+                output2.write(word + " : " start_time + "\n\r")
+
             """
             for word_info in alternative.words:
                 word = word_info.word
                 start_time = word_info.start_time.seconds + word_info.start_time.nanos * 1e-9
                 end_time = word_info.end_time.seconds + word_info.end_time.nanos * 1e-9
             """
+        output2.close
+
     
     #https://cloud.google.com/speech-to-text/docs/async-recognize credits
     def transcribe_gcs(self, gcs_uri):
@@ -78,3 +91,9 @@ class Transcribr:
             # The first alternative is the most likely one for this portion.
             print(u'Transcript: {}'.format(result.alternatives[0].transcript))
             print('Confidence: {}'.format(result.alternatives[0].confidence))
+        
+        output = open("output.txt", "w+")
+
+        for i, word in enumerate(result.results):
+            output.write(word + " ")
+        output.close
