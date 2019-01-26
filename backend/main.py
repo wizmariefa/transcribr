@@ -3,14 +3,16 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+from datetime import datetime
 from google_auth import Google_Auth
 from transcription import Transcribr
 import os
 #############################################
 app = Flask(__name__)
+db_uri = 'sqlite:////tmp/test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 app.secret_key = os.urandom(24)
 
 class User(db.Model):
@@ -52,6 +54,7 @@ class User(db.Model):
         return check_password_hash(self.password_hash, password)
 
 
+db.create_all()
 #############################################
 # TODO: What are we returning?
 @app.route("/login", methods=["GET", "POST"])
@@ -62,7 +65,9 @@ def login(user_info):
 
 @app.route("/signup", methods=["GET", "POST"])
 def sign_up():
+    print(request.data)
     content = request.get_json()
+    print(content)
     hashed_pw = generate_password_hash(content['password'])
     new_user = User(content['firstName'], content['lastName'], 
                     content['email'], hashed_pw)
@@ -81,9 +86,10 @@ def auth_login():
     pass
 
 @app.route("/transcribe", methods=["GET", "POST"])
-@login_required
 def fileupload():
-    # this will be called to upload and transcribe file
+    # TODO: determine how fie will be communicated,
+    # how to parse json to give file to transcription.py,
+    # how user authentication will be verified
     UPLOAD_FOLDER = '/path/to/the/uploads'
     ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
