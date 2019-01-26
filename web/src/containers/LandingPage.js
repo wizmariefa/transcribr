@@ -17,8 +17,11 @@ class App extends Component {
     return (
       <div className="LandingPage">
         <h1>Easily transcribe audio files in just a few steps</h1>
-        <div className="Button" onClick={(() => this.props.history.push('/'))}>
+        <div className="Button" onClick={(() => this.props.history.push('/register'))}>
           Sign Up
+          </div>
+          <div className="Button" onClick={(() => this.props.history.push('/login'))}>
+          Login
           </div>
       </div>
     );
