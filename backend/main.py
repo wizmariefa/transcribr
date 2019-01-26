@@ -1,4 +1,6 @@
 from flask import Flask
+from google_auth import Google_Auth
+from transcription import Transcribr
 from flask_sqlalchemy import SQLAlchemy
 import os
 
