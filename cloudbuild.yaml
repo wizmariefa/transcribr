@@ -1,0 +1,18 @@
+steps:
+  # UI
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/transcribr-ui:$SHORT_SHA', './web' ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/transcribr-server:$SHORT_SHA', './backend' ]
+
+  # Helm
+  - name: 'gcr.io/$PROJECT_ID/helm'
+    args: ['upgrade', '--install', 'transcribr', './charts/transcribr', '--set', 'global.imageTag=$SHORT_SHA', '--set', 'global.API_URL=http://35.193.218.65', '--namespace=default', '--force']
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=montana-pyd'
+
+images:
+  - 'gcr.io/$PROJECT_ID/transcribr-ui:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/transcribr-server:$SHORT_SHA'
+  

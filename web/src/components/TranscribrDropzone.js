@@ -16,7 +16,7 @@ export default class TranscribrDropzone extends Component {
                 <div className="Dropzone" onClick={() => open()} {...getRootProps()}>
                   <input {...getInputProps()} />
                   <div className="Text">
-                    Drag or drop files here.
+                    DRAG OR DROP AUDIO FILES HERE
                   </div>
                 </div>
               </div>

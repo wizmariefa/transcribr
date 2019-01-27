@@ -19,6 +19,7 @@
     "uuidv4": "^2.0.0"
   },
   "scripts": {
+    "production": "node index.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
