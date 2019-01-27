@@ -96,28 +96,25 @@ def sign_up():
     return Response(json.dumps({status: message}), status=status_code)
 
 @app.route("/transcribe", methods=["GET", "POST"])
-@jwt_required
+#@jwt_required
 def fileupload():
-    print(request.args)
-    print( request.form)
-    print(request.files)
-    print(request.values)
+    print("start of method")
     # TODO: determine how fie will be communicated,
     # how to parse json to give file to transcription.py,
     # how user authentication will be verified
-    # UPLOAD_FOLDER = '/files/translate'
-    # ALLOWED_EXTENSIONS = set(['mp4', 'wav'])
-    # target = os.path.join(UPLOAD_FOLDER, 'test_docs')
-    # if not os.path.isdir(target):
-    #     os.mkdir(target)
-    # file = request.files['file']
-    # filename = secure_filename(file.filename)
-    # destination = "/".join([target, filename])
-    # file.save(destination)
+    UPLOAD_FOLDER = '/translate_files/translate/'
+    ALLOWED_EXTENSIONS = set(['mp4', 'wav'])
+    target = os.path.join(UPLOAD_FOLDER, 'test_docs')
+    print(os.path.exists(target))
+    if not os.path.exists(target):
+        os.makedirs(target)
+    file = request.files['file']
+    filename = secure_filename(file.filename)
+    destination = "/".join([target, filename])
+    file.save(destination)
     
-    # ts = Transcribr(file)
-    # session['uploadFilePath'] = destination
-    # response = "Whatever you wish too return"
+    ts = Transcribr(file)
+    session['uploadFilePath'] = destination
     return Response(json.dumps({"STATUS":"MESSAGE"}), status="401")
 
 #############################################
