@@ -112,8 +112,9 @@ def fileupload():
     filename = secure_filename(file.filename)
     destination = "/".join([target, filename])
     file.save(destination)
-    ts = Transcribr(file, 'http://localhost:8080')
-    txt_file = ts.transcribe_gcs(ts.gcs_uri)
+    # ts = Transcribr(file, 'http://localhost:8080')
+    # txt_file = ts.transcribe_gcs(ts.gcs_uri)
+    txt_file = Transcribr.transcribe_file(file)
     status = "SUCCESS"
     message = "Download Your File!"
     status_code = "200"
