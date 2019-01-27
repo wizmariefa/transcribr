@@ -1,8 +1,8 @@
 # This class will do the actual transcription of the audo file
 #!/usr/bin/python3
-#from google.cloud import speech
-#from google.cloud.speech import enums
-#from google.cloud.speech import types
+from google.cloud import speech
+from google.cloud.speech import enums
+from google.cloud.speech import types
 import os
 #from google.cloud import speech_v1p1beta1 as speech_beta #This is for word confidence beta
 #--note: Currently just foundation, will need to change it to apply to our purpose.
@@ -98,3 +98,5 @@ class Transcribr:
         for i, word in enumerate(result.results):
             output.write(word + " ")
         output.close
+
+        return output

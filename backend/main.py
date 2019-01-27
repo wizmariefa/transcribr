@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import json, os, datetime
 from validate_email import validate_email
-from flask import Flask, request, Response
+from flask import Flask, request, Response, make_response
 from flask_cors import CORS
 from flask_jwt import JWT, jwt_required, current_identity
 from flask_jwt_extended import JWTManager, create_access_token
@@ -17,7 +17,7 @@ CORS(app)
 db_uri = 'sqlite:////tmp/test.db'
 
 app.config['JWT_TOKEN_LOCATION'] = ['headers']
-app.config['JWT_HEADER_NAME'] = 'Access-Control-Request-Headers'
+app.config['JWT_HEADER_NAME'] = 'token'
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -97,31 +97,36 @@ def sign_up():
     return Response(json.dumps({status: message}), status=status_code)
 
 @app.route("/transcribe", methods=["GET", "POST"])
-# @jwt_required()
+#@jwt_required()
 def fileupload():
     from pprint import pprint
     pprint(request.headers)
     pprint(request.data)
     pprint(request.files)
-    # TODO: determine how fie will be communicated,
-    # how to parse json to give file to transcription.py,
-    # how user authentication will be verified
-    #UPLOAD_FOLDER = '/translate_files/translate/'
-    #ALLOWED_EXTENSIONS = set(['mp4', 'wav'])
-    #target = os.path.join(UPLOAD_FOLDER, 'test_docs')
-    #print(os.path.exists(target))
-    # if not os.path.exists(target):
-    #     os.makedirs(target)
-    #file = request.files['file']
-    #filename = secure_filename(file.filename)
-    #destination = "/".join([target, filename])
-    #file.save(destination)
-    
-    #ts = Transcribr(file)
-    #session['uploadFilePath'] = destination
-    resp = Response(json.dumps({"STATUS": "MESSAGE"}))
-    resp.headers['Access-Control-Allow-Origin'] = '*'
+    # try:
+    UPLOAD_FOLDER = 'translate_files/'
+    ALLOWED_EXTENSIONS = set(['mp4', 'wav'])
+    target = os.path.join(UPLOAD_FOLDER)
+    if not os.path.isdir(target): os.makedirs(target)
+    file = request.files['file']
+    filename = secure_filename(file.filename)
+    destination = "/".join([target, filename])
+    file.save(destination)
+    ts = Transcribr(file, 'http://localhost:8080')
+    txt_file = ts.transcribe_gcs(ts.gcs_uri)
+    status = "SUCCESS"
+    message = "Download Your File!"
+    status_code = "200"
+    resp = make_response(txt_file)
+    resp.headers['Content-Type'] = 'text/plain;charset=UTF-8'
+    resp.headers['Content-Disposition'] = 'attachment;filename=%s' % txt_file.name
     return resp
+    # except:
+    #     status = "ERROR"
+    #     message = "An error occurred. Please check your file extension and try again."
+    #     status_code = "401"
+    #     resp = json.dumps({status:message})
+    #     return Response(json.dumps({status: message}), status=status_code)
 
 #############################################
 
