@@ -4,7 +4,7 @@ from validate_email import validate_email
 from flask import Flask, request, Response
 from flask_cors import CORS
 from flask_jwt import JWT, jwt_required, current_identity
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token
+from flask_jwt_extended import JWTManager, create_access_token
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
@@ -20,6 +20,7 @@ app.config['JWT_TOKEN_LOCATION'] = ['headers']
 app.config['JWT_HEADER_NAME'] = 'token'
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
@@ -96,7 +97,7 @@ def sign_up():
     return Response(json.dumps({status: message}), status=status_code)
 
 @app.route("/transcribe", methods=["GET", "POST"])
-#@jwt_required
+@jwt_required()
 def fileupload():
     print("start of method")
     # TODO: determine how fie will be communicated,
@@ -115,7 +116,7 @@ def fileupload():
     
     ts = Transcribr(file)
     session['uploadFilePath'] = destination
-    return Response(json.dumps({"STATUS":"MESSAGE"}), status="401")
+    return Response(json.dumps({"STATUS": "MESSAGE"}), headers=('Access-Control-Allow-Origin', '*'))
 
 #############################################
 
