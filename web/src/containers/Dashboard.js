@@ -15,9 +15,8 @@ class Login extends Component {
         <div className="Navigation">
             <h1 className="Logo">transcribr.io</h1>
             <ConnectGoogleCloud />
-            <TranscribrDropzone />
         </div>
-        
+        <TranscribrDropzone />
       </div>
     );
   }
