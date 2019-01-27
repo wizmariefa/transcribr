@@ -73,7 +73,6 @@ def fileupload():
     # how user authentication will be verified
     UPLOAD_FOLDER = '/files/translate'
     ALLOWED_EXTENSIONS = set(['mp4', 'wav'])
-
     target = os.path.join(UPLOAD_FOLDER, 'test_docs')
     if not os.path.isdir(target):
         os.mkdir(target)
@@ -81,6 +80,8 @@ def fileupload():
     filename = secure_filename(file.filename)
     destination = "/".join([target, filename])
     file.save(destination)
+    
+    ts = Transcribr(file)
     session['uploadFilePath'] = destination
     response = "Whatever you wish too return"
     return response
