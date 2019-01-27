@@ -17,7 +17,7 @@ CORS(app)
 db_uri = 'sqlite:////tmp/test.db'
 
 app.config['JWT_TOKEN_LOCATION'] = ['headers']
-app.config['JWT_HEADER_NAME'] = 'token'
+app.config['JWT_HEADER_NAME'] = 'Access-Control-Request-Headers'
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -96,27 +96,32 @@ def sign_up():
         status_code = "401"
     return Response(json.dumps({status: message}), status=status_code)
 
-@app.route("/transcribe", methods=["GET", "POST"])
+@app.route("/transcribe", methods=["GET", "POST", "OPTIONS"])
 @jwt_required()
 def fileupload():
-    print("start of method")
+    from pprint import pprint
+    pprint(request.headers)
+    pprint(request.data)
+    pprint(request.files)
     # TODO: determine how fie will be communicated,
     # how to parse json to give file to transcription.py,
     # how user authentication will be verified
-    UPLOAD_FOLDER = '/translate_files/translate/'
-    ALLOWED_EXTENSIONS = set(['mp4', 'wav'])
-    target = os.path.join(UPLOAD_FOLDER, 'test_docs')
-    print(os.path.exists(target))
-    if not os.path.exists(target):
-        os.makedirs(target)
-    file = request.files['file']
-    filename = secure_filename(file.filename)
-    destination = "/".join([target, filename])
-    file.save(destination)
+    #UPLOAD_FOLDER = '/translate_files/translate/'
+    #ALLOWED_EXTENSIONS = set(['mp4', 'wav'])
+    #target = os.path.join(UPLOAD_FOLDER, 'test_docs')
+    #print(os.path.exists(target))
+    # if not os.path.exists(target):
+    #     os.makedirs(target)
+    #file = request.files['file']
+    #filename = secure_filename(file.filename)
+    #destination = "/".join([target, filename])
+    #file.save(destination)
     
-    ts = Transcribr(file)
-    session['uploadFilePath'] = destination
-    return Response(json.dumps({"STATUS": "MESSAGE"}), headers=('Access-Control-Allow-Origin', '*'))
+    #ts = Transcribr(file)
+    #session['uploadFilePath'] = destination
+    resp = Response(json.dumps({"STATUS": "MESSAGE"}))
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
 
 #############################################
 
