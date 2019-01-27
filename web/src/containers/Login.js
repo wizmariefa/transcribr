@@ -24,7 +24,7 @@ class Login extends Component {
 
     client.login(email, password)
     .then(res => {
-      this.props.history.push("/dashboard/studies");
+      this.props.history.push('/dashboard');
     })
     .catch(err => {
       this.setState({
