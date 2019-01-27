@@ -96,8 +96,8 @@ def sign_up():
         status_code = "401"
     return Response(json.dumps({status: message}), status=status_code)
 
-@app.route("/transcribe", methods=["GET", "POST", "OPTIONS"])
-@jwt_required()
+@app.route("/transcribe", methods=["GET", "POST"])
+# @jwt_required()
 def fileupload():
     from pprint import pprint
     pprint(request.headers)
