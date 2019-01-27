@@ -16,23 +16,21 @@ import os
 app = Flask(__name__)
 CORS(app)
 db_uri = 'sqlite:////tmp/test.db'
+
 app.config['JWT_TOKEN_LOCATION'] = ['json']
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
 app.secret_key = os.urandom(24)
 app.config['JWT_SECRET_KEY'] = os.urandom(24)
-
 
 #############################################
 
 def identity(payload):
     user_id = payload['identity']
     return User.query.get(int(user_id))
-
-# TODO: What are we returning?
-
 
 @app.route("/auth/login", methods=["GET", "POST"])
 def login():
@@ -46,18 +44,18 @@ def login():
             message = "User Authenticated"
             status = "SUCCESS"
             status_code = "200"
+            access_token = create_access_token(identity=id)
+            resp = json.dumps({status: message, "token": access_token})
         else:
             status = "ERROR"
-            message = "User Denied"
+            message = "Incorrect password"
             status_code = "401"
+            resp = json.dumps({status:message})
     else:
         status = "ERROR"
-        message = "User Denied"
+        message = "User does not exist"
         status_code = "401"
-    
-    access_token = create_access_token(identity=id)
-    resp = json.dumps({status: message, "token": access_token})
-    print(resp)
+        resp = json.dumps({status:message})
     return Response(resp, status=status_code)        
 
 @app.route("/auth/register", methods=["GET", "POST"])
@@ -76,7 +74,7 @@ def sign_up():
         status_code = "200"
     except IntegrityError:  # user already exists
         status = "ERROR"
-        message = "User Denied"
+        message = "User already exists"
         status_code = "401"
     return Response(json.dumps({status: message}), status=status_code)
 
