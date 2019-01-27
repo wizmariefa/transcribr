@@ -29,12 +29,15 @@ def login():
     db.create_all()
     content = request.get_json()
     user = User.query.filter_by(email=content['email']).first()
-    if user.check_password(content['password']):
-        status = "success"
+    if user is not None:
+        if user.check_password(content['password']):
+            status = "success"
+        else:
+            status = "denied"
     else:
-        status = "denied"
+        status = "user does not exist"
 
-    return jsonify({"result": "status"})        
+    return jsonify({"result": status})        
 
 @app.route("/auth/register", methods=["GET", "POST"])
 def sign_up():
@@ -47,7 +50,7 @@ def sign_up():
                         content['email'], hashed_pw)
         db.session.add(new_user)
         db.session.commit()
-        return jsonify({"result}": "User added"})
+        return jsonify({"result": "User added"})
     except IntegrityError: # user already exists
         return jsonify({"result": "User already exists"})
 
