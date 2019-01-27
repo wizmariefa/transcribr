@@ -71,7 +71,7 @@ def fileupload():
     # TODO: determine how fie will be communicated,
     # how to parse json to give file to transcription.py,
     # how user authentication will be verified
-    UPLOAD_FOLDER = '/files/translate'
+    UPLOAD_FOLDER = './files/translate'
     ALLOWED_EXTENSIONS = set(['mp4', 'wav'])
 
     target = os.path.join(UPLOAD_FOLDER, 'test_docs')
@@ -81,6 +81,6 @@ def fileupload():
     filename = secure_filename(file.filename)
     destination = "/".join([target, filename])
     file.save(destination)
-    session['uploadFilePath'] = destination
-    response = "Whatever you wish too return"
-    return response
+    message = "Files Uploaded"
+    status_code = "200"
+    return Response(json.dumps({'message': message, 'status': 'Success'}), status=status_code)
