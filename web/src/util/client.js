@@ -87,7 +87,7 @@ class Client {
   }
   // Authentication
   register(firstName = "", lastName = "", email = "", password = "") {
-    return this.post("/researcher/register", {
+    return this.post("/auth/register", {
       firstName,
       lastName,
       email,
@@ -103,7 +103,7 @@ class Client {
       .catch(this._handleError);
   }
   login(email = "", password = "") {
-    return this.post("/researcher/login", {
+    return this.post("/auth/login", {
       email,
       password
     })

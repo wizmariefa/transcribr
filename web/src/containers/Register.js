@@ -26,7 +26,7 @@ class Register extends Component {
 
     client.register(firstName, lastName, email, password)
       .then(res => {
-        this.props.history.push('/dashboard/studies');
+        this.props.history.push('/dashboard');
       })
       .catch(err => {
         this.setState({
