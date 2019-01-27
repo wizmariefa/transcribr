@@ -16,21 +16,20 @@ class LandingPage extends Component {
   render() {
     return (
       <div className="LandingPage">
-        <div className="TopBanner">
-          <h1 className="Logo">transcribr.io</h1>
-        </div>
-        <section className="container">
-          <div className="LeftColumn FlexColumn">
-          <div className="LeftText">Easily transcribe audio files into text with just a few steps.</div>
-          <div className="LeftTextSmall">Transcribr is a simple web application designed to let people more easily
-                                         convert audio files into text files for further use and analysis.</div>
+          <div className="TopBanner">
+              <h1 className="Logo">transcribr.io</h1>
           </div>
-          <div className="RightColumn FlexColumn AlignCenter">
+        <section className="container">
+            <div className="LeftColumn FlexColumn">
+                <div className="LeftText">Easily transcribe audio files into text with just a few steps.</div>
+                <div className="LeftTextSmall">Transcribr is a simple web application designed to let people more easily
+                                         convert audio files into text files for further use and analysis.</div>
+            </div>
+        <div className="RightColumn FlexColumn AlignCenter">
             <div className = "Whitebox FlexColumn">
-            <div className = "ButtonSelect AlignLeft"> Get Started Now!
-             </div>
-            <div className="Button" onClick={(() => this.props.history.push('/register'))}> Sign Up </div>
-            <div className="Button" onClick={(() => this.props.history.push('/login'))}> Login </div>
+                <div className = "ButtonSelect"> Get Started Today!</div>
+                <div className="Button" onClick={(() => this.props.history.push('/register'))}> Sign Up </div>
+                <div className="Button" onClick={(() => this.props.history.push('/login'))}> Login </div>
             </div>
           </div>
         </section>

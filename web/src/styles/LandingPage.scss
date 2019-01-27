@@ -15,12 +15,11 @@
   justify-content: space-between;
   padding-top: 0rem;
   background-color: whitesmoke;
-  //border-bottom: 2px solid red;
 }
 
 h1.Logo {
   padding-right: 8px;
-  font-size: 2.5rem;
+  font-size: 3rem;
   color: $blue;
   font-family: 'Pacifico', cursive;
   text-transform: none;
@@ -62,7 +61,6 @@ h1.Logo {
 }
 
 .LeftColumn {
-  //background-color: #ff9e2c;
   position: absolute;
   height: 90%;
   left: 0px;
@@ -70,11 +68,6 @@ h1.Logo {
 }
 
 .RightColumn {
- // background-color: #b6701e;
-  // background-image: url(../images/stars.jpg);
-  // background-repeat: no-repeat;
-  // background-size: cover;
-  // opacity: .4;
   position: absolute;
   height: 90%;
   right: 0px;
@@ -89,9 +82,13 @@ h1.Logo {
   justify-content: center;
   align-items: center;
   margin-top: 10%;
+  box-shadow: 2px 1px black;
 }
 
 .ButtonSelect {
   color: black;
   text-align: left;
+  padding-bottom: 2rem;
+  letter-spacing: 1px;
+  font-size: 1.5rem;
 }
