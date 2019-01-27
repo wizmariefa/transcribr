@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-import json
+import json, os, datetime
+from validate_email import validate_email
 from flask import Flask, request, Response
 from flask_cors import CORS
 from flask_jwt import JWT, jwt_required, current_identity
@@ -9,15 +10,14 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
-import datetime
 from transcription import Transcribr
-import os
 
 app = Flask(__name__)
 CORS(app)
 db_uri = 'sqlite:////tmp/test.db'
 
-app.config['JWT_TOKEN_LOCATION'] = ['json']
+app.config['JWT_TOKEN_LOCATION'] = ['headers']
+app.config['JWT_HEADER_NAME'] = 'token'
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -37,25 +37,36 @@ def login():
     from models import User
     db.create_all()
     content = request.get_json()
-    user = User.query.filter_by(email=content['email']).first()
-    id = user.id
-    if user is not None:
-        if user.check_password(content['password']):
-            message = "User Authenticated"
-            status = "SUCCESS"
-            status_code = "200"
-            access_token = create_access_token(identity=id)
-            resp = json.dumps({status: message, "token": access_token})
+    if len(content['password']) < 8:
+        return Response(json.dumps({"ERROR": "Password must be at least 8 characters"}), status="401")
+    if not validate_email(content['email']):
+        return Response(json.dumps({"ERROR": "Email is not valid"}), status="401")
+    if content['email'] != "" and content['password'] != "":
+        user = User.query.filter_by(email=content['email']).first()
+        if user is not None:
+            if user.check_password(content['password']):
+                id = user.id
+                message = "User Authenticated"
+                status = "SUCCESS"
+                status_code = "200"
+                access_token = create_access_token(identity=id)
+                resp = json.dumps({status: message, "token": access_token})
+            else:
+                status = "ERROR"
+                message = "Incorrect password"
+                status_code = "401"
+                resp = json.dumps({status:message})
         else:
             status = "ERROR"
-            message = "Incorrect password"
+            message = "User does not exist"
             status_code = "401"
             resp = json.dumps({status:message})
     else:
         status = "ERROR"
-        message = "User does not exist"
         status_code = "401"
-        resp = json.dumps({status:message})
+        message = "Username or password cannot be empty"
+        resp = json.dumps({status: message})
+
     return Response(resp, status=status_code)        
 
 @app.route("/auth/register", methods=["GET", "POST"])
@@ -64,6 +75,12 @@ def sign_up():
     db.create_all()
     content = request.get_json()
     try:
+        if len(content['password']) < 8:
+            return Response(json.dumps({"ERROR":"Password must be at least 8 characters"}), status="401")
+        
+        if not validate_email(content['email']):
+            return Response(json.dumps({"ERROR": "Email is not valid"}), status="401")
+            
         hashed_pw = generate_password_hash(content['password'])
         new_user = User(content['firstName'], content['lastName'],
                         content['email'], hashed_pw)
@@ -81,6 +98,10 @@ def sign_up():
 @app.route("/transcribe", methods=["GET", "POST"])
 @jwt_required
 def fileupload():
+    print(request.args)
+    print( request.form)
+    print(request.files)
+    print(request.values)
     # TODO: determine how fie will be communicated,
     # how to parse json to give file to transcription.py,
     # how user authentication will be verified
@@ -89,7 +110,6 @@ def fileupload():
     # target = os.path.join(UPLOAD_FOLDER, 'test_docs')
     # if not os.path.isdir(target):
     #     os.mkdir(target)
-    print(request.files)
     # file = request.files['file']
     # filename = secure_filename(file.filename)
     # destination = "/".join([target, filename])
@@ -98,7 +118,7 @@ def fileupload():
     # ts = Transcribr(file)
     # session['uploadFilePath'] = destination
     # response = "Whatever you wish too return"
-    return response
+    return Response(json.dumps({"STATUS":"MESSAGE"}), status="401")
 
 #############################################
 

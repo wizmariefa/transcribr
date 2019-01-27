@@ -8,3 +8,4 @@ Flask_JWT==0.3.2
 google_api_python_client==1.7.7
 google-cloud
 google-cloud-speech
+validate_email
