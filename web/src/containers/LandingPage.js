@@ -15,14 +15,21 @@ class LandingPage extends Component {
   }
   render() {
     return (
-      <div className="LandingPage FlexColumn JustifyCenter AlignCenter">
-        <h1>Easily transcribe audio files in just a few steps</h1>
-        <div className="Button" onClick={(() => this.props.history.push('/register'))}>
-          Sign Up
+      <div className="LandingPage">
+        <div className="TopBanner">
+          <h1 className="Logo">transcribr.io</h1>
+        </div>
+        <section className="container">
+          <div className="LeftColumn FlexColumn">
+          <div className="LeftText">Easily transcribe audio files into text with just a few steps.</div>
           </div>
-          <div className="Button" onClick={(() => this.props.history.push('/login'))}>
-          Login
+          <div className="RightColumn FlexColumn AlignCenter">
+            <div className = "Whitebox FlexColumn">
+            <div className="Button" onClick={(() => this.props.history.push('/register'))}> Sign Up </div>
+            <div className="Button" onClick={(() => this.props.history.push('/login'))}> Login </div>
+            </div>
           </div>
+        </section>
       </div>
     );
   }
