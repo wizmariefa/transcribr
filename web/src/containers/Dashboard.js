@@ -4,7 +4,7 @@ import client from './../util/client';
 import ConnectGoogleCloud from './../components/ConnectGoogleCloud';
 import TranscribrDropzone from './../components/TranscribrDropzone';
 
-class Login extends Component {
+class Dashboard extends Component {
   constructor() {
     super();
     this.state = {};
@@ -22,4 +22,4 @@ class Login extends Component {
   }
 }
 
-export default Login;
+export default Dashboard;
