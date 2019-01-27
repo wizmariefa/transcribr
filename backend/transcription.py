@@ -1,4 +1,5 @@
 # This class will do the actual transcription of the audo file
+#!/usr/bin/python3
 from google.cloud import speech
 from google.cloud.speech import enums
 from google.cloud.speech import types
