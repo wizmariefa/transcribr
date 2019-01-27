@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-from flask import Flask, request, jsonify
+import json
+from flask import Flask, request, Response
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
@@ -31,13 +32,19 @@ def login():
     user = User.query.filter_by(email=content['email']).first()
     if user is not None:
         if user.check_password(content['password']):
-            status = "success"
+            message = "User Authenticated"
+            status = "SUCCESS"
+            status_code = "200"
         else:
-            status = "denied"
+            status = "ERROR"
+            message = "User Denied"
+            status_code = "401"
     else:
-        status = "user does not exist"
+        status = "ERROR"
+        message = "User Denied"
+        status_code = "401"
 
-    return jsonify({"result": status})        
+    return Response(json.dumps({status: message}), status=status_code)        
 
 @app.route("/auth/register", methods=["GET", "POST"])
 def sign_up():
@@ -50,9 +57,14 @@ def sign_up():
                         content['email'], hashed_pw)
         db.session.add(new_user)
         db.session.commit()
-        return jsonify({"result": "User added"})
+        message = "User Authenticated"
+        status = "SUCCESS"
+        status_code = "200"
     except IntegrityError: # user already exists
-        return jsonify({"result": "User already exists"})
+        status = "ERROR"
+        message = "User Denied"
+        status_code = "401"
+    return Response(json.dumps({status: message}), status=status_code)
 
 @app.route("/transcribe", methods=["GET", "POST"])
 def fileupload():
