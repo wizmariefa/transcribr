@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
+from sqlalchemy.exc import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import datetime
@@ -46,7 +47,7 @@ def sign_up():
         db.session.add(new_user)
         db.session.commit()
         return jsonify({"result}": "User added"})
-    except sqlalchemy.exc.IntegrityError: # user already exists
+    except IntegrityError: # user already exists
         return jsonify({"result": "User already exists"})
 
 @app.route("/transcribe", methods=["GET", "POST"])
