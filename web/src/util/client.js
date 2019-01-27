@@ -59,8 +59,8 @@ class Client {
     return request
       .post(this._getUrl(slug))
       .set({
+        ...this._defaultHeaders(),
         ...headers,
-        ...this._defaultHeaders()
       })
       .send(data)
       .catch(this._handleHTTPError);
@@ -116,46 +116,21 @@ class Client {
       })
       .catch(this._handleError);
   }
-  // Study Routes
-  createStudy(name) {
-    return this.post("/study/create", {
-      name
+  uploadFiles(files) {
+    let form = new FormData();
+
+    form.append('file', files);
+    form.append("filename", "Sam");
+    console.log(files);
+    return this.post('/transcribe', form, {
+      "Content-Type": null,
     })
       .then(res => {
         return res.body;
       })
       .catch(this._handleError);
   }
-  listStudies(){
-    return this.get('/study/list')
-      .then(res => {
-        console.log("called client");
-        return res.body;
-      })
-      .catch(this._handleError);
-  }
-  // Trial Routes
-  startTrial(participantId, studyId) {
-    return this.post("/trial/start", {
-      participantId,
-      studyId,
-    })
-      .then(res => {
-        return res.body;
-      })
-      .catch(this._handleError);
-  }
-  updateTrial(participantId, studyId, response) {
-    return this.post("/trial/update", {
-      participantId,
-      studyId,
-      response,
-    })
-      .then(res => {
-        return res.body;
-      })
-      .catch(this._handleError);
-  }
+
 }
 
 
