@@ -131,6 +131,13 @@ class Client {
       })
       .catch(this._handleError);
   }
+  connectOAuth(connectData) {
+    return this.post("/connect-oauth", connectData)
+      .then(res => {
+        return JSON.parse(res.text);
+      })
+      .catch(this._handleError);
+  }
 
 }
 
