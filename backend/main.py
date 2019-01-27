@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-from flask import Flask, request, redirect, Response
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -7,56 +8,54 @@ from werkzeug.utils import secure_filename
 import datetime
 from transcription import Transcribr
 import os
+
 #############################################
+
 app = Flask(__name__)
+CORS(app)
 db_uri = 'sqlite:////tmp/test.db'
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 app.secret_key = os.urandom(24)
 db.create_all()
+
 #############################################
+
 # TODO: What are we returning?
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/auth/login", methods=["GET", "POST"])
 def login():
     from models import User
     content = request.get_json()
     user = User.query.filter_by(email=content['email']).first()
     if user.check_password(content['password']):
-        return "User logged in"
+        status = "success"
     else:
-        return "User DENIED"        
+        status = "denied"
 
+    return jsonify({"result": "status"})        
 
-@app.route("/signup", methods=["GET", "POST"])
+@app.route("/auth/register", methods=["GET", "POST"])
 def sign_up():
     from models import User
     content = request.get_json()
-    print(content)
-    hashed_pw = generate_password_hash(content['password'])
-    new_user = User(content['firstName'], content['lastName'], 
-                    content['email'], hashed_pw)
-    db.session.add(new_user)
-    db.session.commit()
-    return "User is signed up!"
-
-@app.route("/auth/register")
-def auth_register():
-    # need to add import for google_auth class, when it's created
-    pass
-
-@app.route("/auth/login")
-def auth_login():
-    # this will allow login with google auth
-    pass
+    try:
+        hashed_pw = generate_password_hash(content['password'])
+        new_user = User(content['firstName'], content['lastName'],
+                        content['email'], hashed_pw)
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({"result}": "User added"})
+    except sqlalchemy.exc.IntegrityError: # user already exists
+        return jsonify({"result": "User already exists"})
 
 @app.route("/transcribe", methods=["GET", "POST"])
 def fileupload():
     # TODO: determine how fie will be communicated,
     # how to parse json to give file to transcription.py,
     # how user authentication will be verified
-    UPLOAD_FOLDER = '/path/to/the/uploads'
-    ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+    UPLOAD_FOLDER = '/files/translate'
+    ALLOWED_EXTENSIONS = set(['mp4', 'wav'])
 
     target = os.path.join(UPLOAD_FOLDER, 'test_docs')
     if not os.path.isdir(target):
@@ -68,5 +67,3 @@ def fileupload():
     session['uploadFilePath'] = destination
     response = "Whatever you wish too return"
     return response
-
-#############################################
