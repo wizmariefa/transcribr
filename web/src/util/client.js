@@ -35,13 +35,14 @@ class Client {
     throw error;
   }
   _handleHTTPError(error) {
-    console.log(error);
     let msg;
     try {
       msg = JSON.parse(error.response.text);
     } catch (e) {
       msg = error.response.text;
     }
+    
+    msg = msg.ERROR;
     throw msg;
   }
   // Requests
