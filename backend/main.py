@@ -128,6 +128,16 @@ def fileupload():
     #     resp = json.dumps({status:message})
     #     return Response(json.dumps({status: message}), status=status_code)
 
+@app.route("/connect-oauth", methods=["GET", "POST"])
+def oauthConnect():
+    from pprint import pprint
+    pprint(request.data)
+    
+    
+    resp = Response(json.dumps({"STATUS": "MESSAGE"}))
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
+
 #############################################
 
 jwt = JWT(app, login, identity)
