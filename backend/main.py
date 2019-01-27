@@ -19,7 +19,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 app.secret_key = os.urandom(24)
-db.create_all()
 
 #############################################
 
@@ -27,6 +26,7 @@ db.create_all()
 @app.route("/auth/login", methods=["GET", "POST"])
 def login():
     from models import User
+    db.create_all()
     content = request.get_json()
     user = User.query.filter_by(email=content['email']).first()
     if user.check_password(content['password']):
@@ -39,6 +39,7 @@ def login():
 @app.route("/auth/register", methods=["GET", "POST"])
 def sign_up():
     from models import User
+    db.create_all()
     content = request.get_json()
     try:
         hashed_pw = generate_password_hash(content['password'])
