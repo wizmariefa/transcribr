@@ -54,12 +54,11 @@ def login():
         status = "ERROR"
         message = "User Denied"
         status_code = "401"
-
+    
     access_token = create_access_token(identity=id)
     resp = json.dumps({status: message, "token": access_token})
     print(resp)
-    return Response(resp, status=status_code)
-
+    return Response(resp, status=status_code)        
 
 @app.route("/auth/register", methods=["GET", "POST"])
 def sign_up():
@@ -82,23 +81,27 @@ def sign_up():
     return Response(json.dumps({status: message}), status=status_code)
 
 @app.route("/transcribe", methods=["GET", "POST"])
+@jwt_required
 def fileupload():
     # TODO: determine how fie will be communicated,
     # how to parse json to give file to transcription.py,
     # how user authentication will be verified
-    UPLOAD_FOLDER = './files/translate'
-    ALLOWED_EXTENSIONS = set(['mp4', 'wav'])
-    target = os.path.join(UPLOAD_FOLDER, 'test_docs')
-    if not os.path.isdir(target):
-        os.mkdir(target)
-    file = request.files['file']
-    filename = secure_filename(file.filename)
-    destination = "/".join([target, filename])
-    file.save(destination)
+    # UPLOAD_FOLDER = '/files/translate'
+    # ALLOWED_EXTENSIONS = set(['mp4', 'wav'])
+    # target = os.path.join(UPLOAD_FOLDER, 'test_docs')
+    # if not os.path.isdir(target):
+    #     os.mkdir(target)
+    print(request.files)
+    # file = request.files['file']
+    # filename = secure_filename(file.filename)
+    # destination = "/".join([target, filename])
+    # file.save(destination)
     
-    ts = Transcribr(file)
-    session['uploadFilePath'] = destination
+    # ts = Transcribr(file)
+    # session['uploadFilePath'] = destination
+    # response = "Whatever you wish too return"
+    return response
 
-    message = "Files Uploaded"
-    status_code = "200"
-    return Response(json.dumps({'message': message, 'status': 'Success'}), status=status_code)
+#############################################
+
+jwt = JWT(app, login, identity)
