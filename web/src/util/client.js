@@ -7,7 +7,7 @@ class Client {
   constructor(baseUrl = "") {
     this.baseUrl = baseUrl;
     this.token = null;
-    let token = localStorage.getItem("BEANFEST_TOKEN");
+    let token = localStorage.getItem("TRANSCRIBR_TOKEN");
     if (token) {
       this.token = token;
     }
@@ -27,7 +27,7 @@ class Client {
     return headers;
   }
   _setToken(token) {
-    localStorage.setItem("BEANFEST_TOKEN", token);
+    localStorage.setItem("TRANSCRIBR_TOKEN", token);
     this.token = token;
   }
   _handleError(error) {
@@ -94,11 +94,11 @@ class Client {
       password
     })
       .then(res => {
-        this._setToken(res.body.token);
+        this._setToken(JSON.parse(res.text).token);
         return res;
       })
       .then(res => {
-        return res.body;
+        return JSON.parse(res.text);
       })
       .catch(this._handleError);
   }
@@ -108,11 +108,11 @@ class Client {
       password
     })
       .then(res => {
-        this._setToken(res.body.token);
+        this._setToken(JSON.parse(res.text).token);
         return res;
       })
       .then(res => {
-        return res.body;
+        return JSON.parse(res.text);
       })
       .catch(this._handleError);
   }
@@ -126,7 +126,7 @@ class Client {
       "Content-Type": null,
     })
       .then(res => {
-        return res.body;
+        return JSON.parse(res.text);
       })
       .catch(this._handleError);
   }
