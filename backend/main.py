@@ -18,16 +18,19 @@ db.create_all()
 #############################################
 # TODO: What are we returning?
 @app.route("/login", methods=["GET", "POST"])
-def login(user_info):
+def login():
     from models import User
     content = request.get_json()
     user = User.query.filter_by(email=content['email']).first()
-    return generate_password_hash(content['password']) == user.passwordHash
+    if user.check_password(content['password']):
+        return "User logged in"
+    else:
+        return "User DENIED"        
+
 
 @app.route("/signup", methods=["GET", "POST"])
 def sign_up():
     from models import User
-    print(request.data)
     content = request.get_json()
     print(content)
     hashed_pw = generate_password_hash(content['password'])
